@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="nav">
+      <h1>Lift Simulator!</h1>
+    </div>
+
+    <form class="input-form">
+      <div class="div-input">
+        <label>Enter The Number of lifts</label>
+        <input
+          id="lift"
+          type="number"
+          placeholder="enter the number of lifts ex: 2"
+        />
+      </div>
+
+      <div class="div-input">
+        <label>Enter The Number of floor</label>
+        <input
+          id="floor"
+          type="number"
+          placeholder="enter the number of floors ex: 4"
+        />
+      </div>
+      <button type="submit">Genrate</button>
+    </form>
+
+    <div class="building"></div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

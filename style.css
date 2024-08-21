@@ -1,0 +1,79 @@
+body {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem; /* Add padding for better spacing */
+}
+
+.input-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem; 
+}
+
+.div-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.div-input label {
+    padding: 6px 10px;
+    margin: 4px 2px;
+    background: black;
+    color: #fff;
+    border-radius: 4px;
+}
+
+.div-input input[type="number"] {
+    padding: 4px 10px;
+    margin: 4px 2px;
+    height: 30px; 
+    width: 100%; 
+    max-width: 20rem; 
+    border: 2px solid black;
+    border-radius: 4px;
+}
+
+.input-form button {
+    background-color: #fff;
+    border: 2px solid black;
+    font-size: medium;
+    padding: 8px;
+    border-radius: 4px;
+    transition-duration: 0.4s;
+}
+
+.input-form button:hover {
+    background-color: #373434;
+    color: #ebd7d7;
+}
+
+/* Media Query for Mobile Devices */
+@media (max-width: 768px) {
+    .input-form {
+        padding: 0.5rem; 
+    }
+
+    .div-input input[type="number"] {
+        max-width: 20rem;  
+    }
+
+    .nav h1 {
+        font-size: 1.5rem; 
+    }
+
+    .input-form button {
+        padding: 10px; 
+    }
+}
