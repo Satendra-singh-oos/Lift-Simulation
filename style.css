@@ -143,16 +143,22 @@ span {
   width: 40px;
   background-color: #000000;
   transition: transform 0.9s;
+  position: absolute; /* Position doors inside the lift */
+  height: 100%; /* Make the doors fill the lift's height */
 }
 
 .left-door {
-  background-color: #000000;
+  left: 0; /* Position the left door to the left inside the lift */
 }
 
 .right-door {
-  background-color: #8b8b8b;
+  right: 0; /* Position the right door to the right inside the lift */
 }
 
+.lift {
+  position: relative;
+  overflow: hidden; /* Hide doors when they move inside */
+}
 /* Media Query for Mobile Devices */
 @media (max-width: 768px) {
   .input-form {
