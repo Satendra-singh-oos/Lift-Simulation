@@ -1,6 +1,6 @@
 let lifts = [];
 let waitingLiftsQueue = [];
-let activeLiftsQueue = [];
+let activeRequestsForLift = new Set(); // Track active lift requests by floor ID
 let inputForm = document.querySelector(".input-form");
 const generateButton = document.querySelector("#genrateFloorAndLift");
 
@@ -10,12 +10,11 @@ function genrateAlertError(str) {
 }
 
 function validateInput(noOfFloors, numLifts) {
-  if (noOfFloors == NaN || numLifts == NaN) {
-    genrateAlertError("Input fields can not be empty");
-
+  if (isNaN(noOfFloors) || isNaN(numLifts)) {
+    genrateAlertError("Input fields cannot be empty");
     return false;
   } else if (noOfFloors <= 0 || numLifts <= 0) {
-    genrateAlertError("Number of floors And Number of Lift can't be zero");
+    genrateAlertError("Number of floors and number of lifts can't be zero");
     return false;
   } else if (noOfFloors < numLifts) {
     genrateAlertError(
@@ -27,7 +26,104 @@ function validateInput(noOfFloors, numLifts) {
   }
 }
 
-const genrateFloorAndTable = () => {
+function getIdForLiftOrFloor(id) {
+  return parseInt(id.split("-")[1]);
+}
+
+function handleWaitingQueue() {
+  if (waitingLiftsQueue.length > 0) {
+    const nextRequest = waitingLiftsQueue.shift();
+    const nearestAvailableLift = findNearestAvailableLift(nextRequest.floorId);
+
+    if (nearestAvailableLift) {
+      moveLift(nearestAvailableLift, nextRequest.floorId);
+    } else {
+      // If no lift is available, re-add the request to the queue
+      waitingLiftsQueue.unshift(nextRequest);
+    }
+  }
+}
+
+function moveLift(lift, requestedFloorId) {
+  lift.isBusy = true;
+  activeRequestsForLift.add(requestedFloorId); // Add to active requests
+  const floorsToMove = Math.abs(requestedFloorId - lift.currFloor);
+  const timeToMoveLift = floorsToMove * 2;
+
+  const liftElement = document.getElementById(lift.liftId);
+  const leftDoor = liftElement.querySelector(".left-door");
+  const rightDoor = liftElement.querySelector(".right-door");
+
+  const floorHeight = 200;
+  const liftHeight = 80;
+  const offset = (floorHeight - liftHeight) / 2;
+
+  liftElement.style.transition = `transform ${timeToMoveLift}s ease-in-out`;
+
+  // Adjust the lift position to center it on the floor
+  liftElement.style.transform = `translateY(-${
+    requestedFloorId * floorHeight + offset
+  }px)`;
+
+  setTimeout(() => {
+    lift.currFloor = requestedFloorId;
+
+    // Open doors
+    leftDoor.style.transform = `translateX(-100%)`;
+    rightDoor.style.transform = `translateX(100%)`;
+
+    setTimeout(() => {
+      // Close doors
+      leftDoor.style.transform = `translateX(0)`;
+      rightDoor.style.transform = `translateX(0)`;
+
+      setTimeout(() => {
+        // After doors close, lift becomes available again
+        lift.isBusy = false;
+        activeRequestsForLift.delete(requestedFloorId); // Remove from active requests
+        handleWaitingQueue(); // Check if there are any pending requests
+      }, 2500); // Wait for doors to close
+    }, 2500); // Doors stay open for 2.5s
+  }, timeToMoveLift * 1000); // Wait for the lift to reach the requested floor
+}
+
+function findNearestAvailableLift(requestedFloorId) {
+  let nearestLift = null;
+  let shortestDistance = Infinity;
+
+  for (let i = 0; i < lifts.length; i++) {
+    const lift = lifts[i];
+    if (!lift.isBusy) {
+      const distance = Math.abs(lift.currFloor - requestedFloorId);
+      if (distance < shortestDistance) {
+        shortestDistance = distance;
+        nearestLift = lift;
+      }
+    }
+  }
+  return nearestLift;
+}
+
+function handleLiftRequest(event) {
+  const requestedFloorId = getIdForLiftOrFloor(event.target.id);
+
+  // Check if the floor is already being serviced
+  if (activeRequestsForLift.has(requestedFloorId)) {
+    return;
+  }
+
+  const nearestAvailableLift = findNearestAvailableLift(requestedFloorId);
+  if (nearestAvailableLift) {
+    moveLift(nearestAvailableLift, requestedFloorId);
+  } else {
+    waitingLiftsQueue.push({
+      floorId: requestedFloorId,
+      direction: event.target.className,
+    });
+  }
+}
+
+const genrateFloorAndLift = () => {
   const building = document.querySelector(".building");
   const noOfFloor = Number(document.querySelector("#floor").value);
   const noOfLift = Number(document.querySelector("#lift").value);
@@ -37,40 +133,59 @@ const genrateFloorAndTable = () => {
     generateButton.innerText = "Generate";
     return;
   }
-  // create a div
+
+  const liftWidth = 80; // Width of each lift
+  const liftMargin = 40; // Total horizontal margin for each lift
+  const calculatedWidth = (liftWidth + liftMargin) * noOfLift;
+  const minWidth = 500; // Minimum width to ensure floors are visible on smaller screens
+  const floorWidth = Math.max(calculatedWidth, minWidth);
 
   for (let i = noOfFloor; i >= 0; i--) {
     const floorDiv = document.createElement("div");
     floorDiv.classList.add("floor");
+    floorDiv.style.width = `${floorWidth}px`;
+
+    const floorInfo = document.createElement("div");
+    floorInfo.classList.add("floor-info");
 
     const spanText = document.createElement("span");
     spanText.innerText = `floor-${i}`;
-
-    floorDiv.appendChild(spanText);
+    floorInfo.appendChild(spanText);
 
     if (i < noOfFloor) {
       const upBtn = document.createElement("button");
       upBtn.classList.add("upBtn");
       upBtn.id = `upBtn-${i}`;
       upBtn.innerText = "Up";
-      floorDiv.appendChild(upBtn);
+      floorInfo.appendChild(upBtn);
     }
     if (i != 0) {
       const downBtn = document.createElement("button");
       downBtn.classList.add("downBtn");
       downBtn.id = `downBtn-${i}`;
       downBtn.innerText = "Down";
-      floorDiv.appendChild(downBtn);
+      floorInfo.appendChild(downBtn);
     }
+
+    floorDiv.appendChild(floorInfo);
 
     if (i === 0) {
       const liftContainer = document.createElement("div");
       liftContainer.classList.add("lift-container");
 
-      for (let i = 0; i < noOfLift; i++) {
+      for (let j = 0; j < noOfLift; j++) {
         const liftDiv = document.createElement("div");
         liftDiv.classList.add("lift");
-        liftDiv.id = `lift-${i}`;
+        liftDiv.id = `lift-${j}`;
+
+        const leftDoor = document.createElement("div");
+        leftDoor.classList.add("door", "left-door");
+        liftDiv.appendChild(leftDoor);
+
+        const rightDoor = document.createElement("div");
+        rightDoor.classList.add("door", "right-door");
+        liftDiv.appendChild(rightDoor);
+
         liftContainer.appendChild(liftDiv);
       }
 
@@ -78,16 +193,22 @@ const genrateFloorAndTable = () => {
     }
 
     // append child
+    building.style.width = `${floorWidth}px`;
+
     building.appendChild(floorDiv);
   }
 
   // update the lifts array
-
   lifts = Array.from(document.querySelectorAll(".lift"), (el) => ({
-    leftId: el.id,
+    liftId: el.id,
     isBusy: false,
     currFloor: 0,
   }));
+
+  // adding eventListern on the up btn and down btn
+  document.querySelectorAll(".upBtn, .downBtn").forEach((button) => {
+    button.addEventListener("click", handleLiftRequest);
+  });
 
   return;
 };
@@ -97,5 +218,5 @@ inputForm.addEventListener("submit", function (event) {
 
   generateButton.disabled = true;
   generateButton.innerText = "Generating...";
-  genrateFloorAndTable();
+  genrateFloorAndLift();
 });

@@ -1,121 +1,186 @@
 body {
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 .nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem; /* Add padding for better spacing */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
 }
 
 .input-form {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 1rem;
-    gap: 1rem; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1rem;
 }
 
 .div-input {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .div-input label {
-    padding: 6px 10px;
-    margin: 4px 2px;
-    background: black;
-    color: #fff;
-    border-radius: 4px;
+  padding: 6px 10px;
+  margin: 4px 2px;
+  background: black;
+  color: #fff;
+  border-radius: 4px;
 }
 
 .div-input input[type="number"] {
-    padding: 4px 10px;
-    margin: 4px 2px;
-    height: 30px; 
-    width: 100%; 
-    max-width: 20rem; 
-    border: 2px solid black;
-    border-radius: 4px;
+  padding: 4px 10px;
+  margin: 4px 2px;
+  height: 30px;
+  width: 100%;
+  max-width: 20rem;
+  border: 2px solid black;
+  border-radius: 4px;
 }
 
 .input-form button {
-    background-color: #fff;
-    border: 2px solid black;
-    font-size: medium;
-    padding: 8px;
-    border-radius: 4px;
-    transition-duration: 0.4s;
+  background-color: #fff;
+  border: 2px solid black;
+  font-size: medium;
+  padding: 8px;
+  border-radius: 4px;
+  transition-duration: 0.4s;
 }
 
 .input-form button:hover {
-    background-color: #373434;
-    color: #ebd7d7;
+  background-color: #373434;
+  color: #ebd7d7;
 }
 
-.floor{
-    border: 2px solid black; 
-    margin: 4px 2px;
-    padding: 30px 20px;
-    display: flex;
-    justify-content: baseline; 
-    align-items: center;
-    max-width: 100%;
+/* .floor {
+  height: 200px;
+  border-bottom: 2px solid black;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+} */
+/* .lift {
+  background-color: #4f4d4d;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  flex-direction: row;
+  margin: 0px 20px;
+} */
 
+/* .building {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+} */
+
+.floor {
+  height: 200px;
+  border-bottom: 2px solid black;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  /* position: relative;
+  box-sizing: border-box; */
+  /* padding-left: 20px; */
 }
-
-.upBtn, .downBtn {
-    padding: 8px 16px; 
-    margin: 0px 4px;
-    border: 1px solid black;
-    border-radius: 4px;
-    cursor: pointer;
-    background-color: #fff;
-    transition: background-color 0.3s ease;
-}
-
-.upBtn:hover, .downBtn:hover {
-    background-color: #373434;
-    color: #ebd7d7;
+.floor-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  gap: 20px;
+  /* left: 20px; */
+  z-index: 1;
 }
 
 .lift-container {
-    display: flex;
-    flex: 1;
-    gap: 10px;
-
+  display: flex;
+  height: 100%;
+  align-items: center;
+  margin-left: 39px;
+  /* border: 2px solid red; */
+}
+.lift {
+  background-color: #4f4d4d;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  flex-direction: row;
+  margin: 0 20px;
+}
+span {
+  margin: 0px 2px;
 }
 
-.lift {
-    background-color: #4f4d4d;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.upBtn,
+.downBtn {
+  padding: 2px 4px;
+  margin: 0px 2px;
+  border: 1px solid black;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.upBtn:hover,
+.downBtn:hover {
+  background-color: #373434;
+  color: #ebd7d7;
+}
+
+.door {
+  width: 40px;
+  background-color: #000000;
+  transition: transform 0.9s;
+}
+
+.left-door {
+  background-color: #000000;
+}
+
+.right-door {
+  background-color: #8b8b8b;
 }
 
 /* Media Query for Mobile Devices */
 @media (max-width: 768px) {
-    .input-form {
-        padding: 0.5rem; 
-    }
+  .input-form {
+    padding: 0.5rem;
+  }
 
-    .div-input input[type="number"] {
-        max-width: 20rem;  
-    }
+  .div-input input[type="number"] {
+    max-width: 20rem;
+  }
 
-    .nav h1 {
-        font-size: 1.5rem; 
-    }
+  .nav h1 {
+    font-size: 1.5rem;
+  }
 
-    .input-form button {
-        padding: 10px; 
-    }
+  .input-form button {
+    padding: 10px;
+  }
+
+  .building {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .floor {
+    padding-left: 10px;
+  }
+
+  .floor-info {
+    left: 10px;
+  }
 }
