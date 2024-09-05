@@ -111,7 +111,12 @@ body {
   /* border: 2px solid red; */
 }
 .lift {
-  background-color: #4f4d4d;
+  background-image: url("https://tinysite.realdevsquad.com/_next/image?url=%2Frds.png&w=96&q=75");
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  /* background-color: #4f4d4d; */
   width: 80px;
   height: 80px;
   display: flex;
@@ -143,16 +148,18 @@ span {
   width: 40px;
   background-color: #000000;
   transition: transform 0.9s;
-  position: absolute; /* Position doors inside the lift */
-  height: 100%; /* Make the doors fill the lift's height */
+  position: absolute;
+  height: 100%;
 }
 
 .left-door {
-  left: 0; /* Position the left door to the left inside the lift */
+  background-color: #1d1283;
+  left: 0;
 }
 
 .right-door {
-  right: 0; /* Position the right door to the right inside the lift */
+  background-color: #e30162;
+  right: 0;
 }
 
 .lift {

@@ -21,6 +21,10 @@ function validateInput(noOfFloors, numLifts) {
       "Number of floors can't be less than the number of lifts."
     );
     return false;
+  } else if (noOfFloors > 130) {
+    genrateAlertError(
+      ` FUN FACT :The tallest lift (elevator) in a building is 578.5 m (1,898 ft 1 in) high, achieved by high-speed elevator NexWay, designed by Mitsubishi Electric Corporation (Japan) and installed at the Shanghai Tower Unit FR/FLH1 and 2 (China), on 27 October 2015. It is installed in the 632 m (2,073 ft 5 in) tall Shanghai Tower, travelling 124 of its 127 stories. src = ${"https://www.guinnessworldrecords.com/world-records/106868-tallest-elevator-in-a-building"}`
+    );
   } else {
     return true;
   }
@@ -61,9 +65,17 @@ function moveLift(lift, requestedFloorId) {
   liftElement.style.transition = `transform ${timeToMoveLift}s ease-in-out`;
 
   // Adjust the lift position to center it on the floor
-  liftElement.style.transform = `translateY(-${
-    requestedFloorId * floorHeight + offset
-  }px)`;
+  const noOfFloor = Number(document.querySelector("#floor").value);
+
+  if (noOfFloor < 80) {
+    liftElement.style.transform = `translateY(-${
+      requestedFloorId * floorHeight + offset
+    }px)`;
+  } else {
+    liftElement.style.transform = `translateY(-${
+      requestedFloorId * floorHeight + offset + 100
+    }px)`;
+  }
 
   setTimeout(() => {
     lift.currFloor = requestedFloorId;
