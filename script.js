@@ -67,15 +67,9 @@ function moveLift(lift, requestedFloorId) {
   // Adjust the lift position to center it on the floor
   const noOfFloor = Number(document.querySelector("#floor").value);
 
-  if (noOfFloor < 80) {
-    liftElement.style.transform = `translateY(-${
-      requestedFloorId * floorHeight + offset
-    }px)`;
-  } else {
-    liftElement.style.transform = `translateY(-${
-      requestedFloorId * floorHeight + offset + 100
-    }px)`;
-  }
+  liftElement.style.transform = `translateY(-${
+    requestedFloorId * floorHeight + offset
+  }px)`;
 
   setTimeout(() => {
     lift.currFloor = requestedFloorId;
