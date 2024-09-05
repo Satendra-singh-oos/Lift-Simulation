@@ -83,7 +83,7 @@ body {
 } */
 
 .floor {
-  height: 200px;
+  height: 300px;
   border-bottom: 2px solid black;
   display: flex;
   flex-direction: row;
