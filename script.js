@@ -14,7 +14,9 @@ function validateInput(noOfFloors, numLifts) {
     genrateAlertError("Input fields cannot be empty");
     return false;
   } else if (noOfFloors <= 0 || numLifts <= 0) {
-    genrateAlertError("Number of floors and number of lifts can't be zero");
+    genrateAlertError(
+      "Number of floors and number of lifts can't be zero or negative"
+    );
     return false;
   } else if (noOfFloors < numLifts) {
     genrateAlertError(
@@ -64,8 +66,6 @@ function moveLift(lift, requestedFloorId) {
   const offset = (floorHeight - liftHeight) / 2;
 
   liftElement.style.transition = `transform ${timeToMoveLift}s ease-in-out`;
-
-  const noOfFloor = Number(document.querySelector("#floor").value);
 
   // Adjust the lift position to center it on the floor
   liftElement.style.transform = `translateY(-${
@@ -217,13 +217,24 @@ const genrateFloorAndLift = () => {
     button.addEventListener("click", handleLiftRequest);
   });
 
+  generateButton.style.display = "none";
+
+  const resetButton = document.createElement("button");
+  resetButton.id = "resetButton";
+  resetButton.innerText = "Reset";
+  resetButton.addEventListener("click", () => {
+    window.location.reload(); // Reload the page on button click
+  });
+
+  // Append the "Reset" button where the "Generate" button was
+  inputForm.appendChild(resetButton);
   return;
 };
 
 inputForm.addEventListener("submit", function (event) {
   event.preventDefault();
 
-  generateButton.disabled = true;
-  generateButton.innerText = "Generating...";
+  // generateButton.disabled = true;
+  // generateButton.innerText = "Generating...";
   genrateFloorAndLift();
 });
