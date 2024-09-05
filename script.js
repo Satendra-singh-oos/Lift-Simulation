@@ -1,6 +1,37 @@
+const floorInput = document.querySelector("#floor");
+const liftInput = document.querySelector("#lift");
+
+function clearInput(inputElement) {
+  inputElement.value = "";
+}
+
+function validateNumericInput(inputElement) {
+  const value = inputElement.value;
+  // Check if the value contains anything other than numbers
+  const numericREGEX = /^[0-9]*$/; // Allow only numeric characters (0-9)
+
+  if (!numericREGEX.test(value) && value !== "") {
+    alert("Please enter only numeric values");
+    clearInput(inputElement); // Reset the input field after showing the alert
+    return false;
+  }
+  return true;
+}
+
+document.querySelector("#floor").addEventListener("input", function (event) {
+  validateNumericInput(event.target);
+});
+
+document.querySelector("#lift").addEventListener("input", function (event) {
+  validateNumericInput(event.target);
+});
+
+/* Logic */
 let lifts = [];
 let waitingLiftsQueue = [];
 let activeRequestsForLift = new Set(); // Track active lift requests by floor ID
+let activeUpRequests = new Set(); // Tracks active up requests by floor ID
+let activeDownRequests = new Set();
 let inputForm = document.querySelector(".input-form");
 const generateButton = document.querySelector("#genrateFloorAndLift");
 
@@ -11,7 +42,10 @@ function genrateAlertError(str) {
 
 function validateInput(noOfFloors, numLifts) {
   if (isNaN(noOfFloors) || isNaN(numLifts)) {
-    genrateAlertError("Input fields cannot be empty");
+    genrateAlertError(
+      "Input fields cannot be empty Or Other Then Number not allowed"
+    );
+
     return false;
   } else if (noOfFloors <= 0 || numLifts <= 0) {
     genrateAlertError(
@@ -51,9 +85,14 @@ function handleWaitingQueue() {
   }
 }
 
-function moveLift(lift, requestedFloorId) {
+function moveLift(lift, requestedFloorId, direction) {
   lift.isBusy = true;
-  activeRequestsForLift.add(requestedFloorId); // Add to active requests
+  if (direction === "up") {
+    activeUpRequests.add(requestedFloorId);
+  } else {
+    activeDownRequests.add(requestedFloorId);
+  }
+
   const floorsToMove = Math.abs(requestedFloorId - lift.currFloor);
   const timeToMoveLift = floorsToMove * 2;
 
@@ -87,7 +126,11 @@ function moveLift(lift, requestedFloorId) {
       setTimeout(() => {
         // After doors close, lift becomes available again
         lift.isBusy = false;
-        activeRequestsForLift.delete(requestedFloorId); // Remove from active requests
+        if (direction === "up") {
+          activeUpRequests.delete(requestedFloorId);
+        } else {
+          activeDownRequests.delete(requestedFloorId);
+        }
         handleWaitingQueue(); // Check if there are any pending requests
       }, 2500); // Wait for doors to close
     }, 2500); // Doors stay open for 2.5s
@@ -113,19 +156,23 @@ function findNearestAvailableLift(requestedFloorId) {
 
 function handleLiftRequest(event) {
   const requestedFloorId = getIdForLiftOrFloor(event.target.id);
+  const direction = event.target.classList.contains("upBtn") ? "up" : "down";
 
-  // Check if the floor is already being serviced
-  if (activeRequestsForLift.has(requestedFloorId)) {
+  // Check if the request is already active for the specific direction
+  if (
+    (direction === "up" && activeUpRequests.has(requestedFloorId)) ||
+    (direction === "down" && activeDownRequests.has(requestedFloorId))
+  ) {
     return;
   }
 
   const nearestAvailableLift = findNearestAvailableLift(requestedFloorId);
   if (nearestAvailableLift) {
-    moveLift(nearestAvailableLift, requestedFloorId);
+    moveLift(nearestAvailableLift, requestedFloorId, direction);
   } else {
     waitingLiftsQueue.push({
       floorId: requestedFloorId,
-      direction: event.target.className,
+      direction: direction,
     });
   }
 }
