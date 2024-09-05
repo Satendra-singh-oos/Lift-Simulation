@@ -63,7 +63,7 @@ function moveLift(lift, requestedFloorId) {
   const liftHeight = 80;
   const offset = (floorHeight - liftHeight) / 2;
 
-  // liftElement.style.transition = `transform ${timeToMoveLift}s ease-in-out`;
+  liftElement.style.transition = `transform ${timeToMoveLift}s ease-in-out`;
 
   const noOfFloor = Number(document.querySelector("#floor").value);
 
