@@ -77,7 +77,11 @@ function handleWaitingQueue() {
     const nearestAvailableLift = findNearestAvailableLift(nextRequest.floorId);
 
     if (nearestAvailableLift) {
-      moveLift(nearestAvailableLift, nextRequest.floorId);
+      moveLift(
+        nearestAvailableLift,
+        nextRequest.floorId,
+        nextRequest.direction
+      );
     } else {
       // If no lift is available, re-add the request to the queue
       waitingLiftsQueue.unshift(nextRequest);
@@ -115,13 +119,13 @@ function moveLift(lift, requestedFloorId, direction) {
     lift.currFloor = requestedFloorId;
 
     // Open doors
-    leftDoor.style.transform = `translateX(-100%)`;
-    rightDoor.style.transform = `translateX(100%)`;
+    leftDoor.style.transform = "translateX(-100%)";
+    rightDoor.style.transform = "translateX(100%)";
 
     setTimeout(() => {
       // Close doors
-      leftDoor.style.transform = `translateX(0)`;
-      rightDoor.style.transform = `translateX(0)`;
+      leftDoor.style.transform = "translateX(0)";
+      rightDoor.style.transform = "translateX(0)";
 
       setTimeout(() => {
         // After doors close, lift becomes available again
@@ -170,10 +174,16 @@ function handleLiftRequest(event) {
   if (nearestAvailableLift) {
     moveLift(nearestAvailableLift, requestedFloorId, direction);
   } else {
-    waitingLiftsQueue.push({
-      floorId: requestedFloorId,
-      direction: direction,
-    });
+    // Add a check to prevent duplicate requests
+    const existingRequest = waitingLiftsQueue.find(
+      (req) => req.floorId === requestedFloorId && req.direction === direction
+    );
+    if (!existingRequest) {
+      waitingLiftsQueue.push({
+        floorId: requestedFloorId,
+        direction: direction,
+      });
+    }
   }
 }
 
